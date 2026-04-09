@@ -1,0 +1,398 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Content Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --g1:#1A6B3C;--g2:#2D8B55;--g3:#e8f5ee;--g4:#d0eedd;
+  --white:#ffffff;--grey:#f4f6f8;--border:#d8e8df;
+  --text:#1a2e23;--muted:#6b8a77;--danger:#dc2626;--warn:#d97706;
+  --shadow:0 1px 4px rgba(26,107,60,.10);
+}
+body{background:var(--grey);color:var(--text);font-family:'DM Sans',system-ui,sans-serif;height:100vh;overflow:hidden}
+.wrap{display:grid;grid-template-columns:300px 1fr;height:100vh}
+
+/* SIDEBAR */
+.side{background:var(--white);border-right:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column;box-shadow:2px 0 8px rgba(26,107,60,.06)}
+.side-top{background:linear-gradient(135deg,var(--g1),var(--g2));padding:18px 16px;color:#fff}
+.side-top h1{font-size:17px;font-weight:700;margin-bottom:2px}
+.side-top .tagline{font-size:11px;opacity:.8}
+.logo-icon{font-size:22px;margin-bottom:4px}
+
+/* KEY */
+.key-section{padding:12px 14px;border-bottom:1px solid var(--border);background:var(--g3)}
+.key-status{font-size:12px;margin-bottom:6px;display:flex;align-items:center;gap:6px;font-weight:500}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--danger);flex-shrink:0}
+.dot.ok{background:#16a34a}
+.key-row{display:flex;gap:6px}
+.key-row input{flex:1}
+
+/* SITES */
+.sites-section{padding:12px 14px;border-bottom:1px solid var(--border)}
+.sec-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin-bottom:8px}
+.site-item{padding:8px 10px;background:var(--grey);border:1.5px solid var(--border);border-radius:8px;cursor:pointer;margin-bottom:6px;transition:.15s;display:flex;justify-content:space-between;align-items:center}
+.site-item:hover{border-color:var(--g2);background:var(--g3)}
+.site-item.active{border-color:var(--g1);background:var(--g4)}
+.site-name{font-size:12px;font-weight:600;color:var(--text)}
+.site-badge{font-size:10px;color:var(--muted);background:var(--white);padding:2px 6px;border-radius:4px;border:1px solid var(--border)}
+.del-btn{font-size:10px;color:var(--danger);cursor:pointer;padding:2px 5px;border:1px solid var(--danger);border-radius:3px;background:none;opacity:0;transition:.1s}
+.site-item:hover .del-btn{opacity:1}
+.no-sites{font-size:12px;color:var(--muted);font-style:italic}
+
+/* FORM */
+.form-section{padding:12px 14px;flex:1}
+label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;font-weight:600;display:block;margin-bottom:4px;margin-top:10px}
+label:first-of-type{margin-top:0}
+input,select{width:100%;padding:7px 10px;background:var(--white);border:1.5px solid var(--border);border-radius:7px;color:var(--text);font-size:13px;font-family:inherit;transition:.15s}
+input:focus,select:focus{outline:none;border-color:var(--g2);box-shadow:0 0 0 3px rgba(45,139,85,.12)}
+
+/* SCOPE */
+.scope-row{display:flex;gap:4px;margin-top:10px}
+.scope-btn{flex:1;padding:5px 2px;font-size:11px;font-weight:600;border:1.5px solid var(--border);background:var(--white);color:var(--muted);border-radius:6px;cursor:pointer;text-align:center;transition:.15s;font-family:inherit}
+.scope-btn:hover{border-color:var(--g2);color:var(--g1)}
+.scope-btn.active{background:var(--g1);border-color:var(--g1);color:#fff}
+
+/* TOGGLES */
+.toggles{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--grey);border-radius:7px;border:1.5px solid var(--border)}
+.tgl-label{font-size:12px;font-weight:600;color:var(--text)}
+.tgl-desc{font-size:10px;color:var(--muted)}
+.switch{position:relative;width:36px;height:20px;flex-shrink:0}
+.switch input{opacity:0;width:0;height:0}
+.slider{position:absolute;inset:0;background:#cbd5cc;border-radius:20px;cursor:pointer;transition:.2s}
+.slider:before{content:'';position:absolute;width:14px;height:14px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+input:checked+.slider{background:var(--g1)}
+input:checked+.slider:before{transform:translateX(16px)}
+
+/* BUTTONS */
+.btn{width:100%;padding:9px;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;transition:.15s;font-family:inherit}
+.btn-save{background:var(--g3);color:var(--g1);border:1.5px solid var(--g4);margin-top:8px}
+.btn-save:hover{background:var(--g4)}
+.btn-run{background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;margin-top:6px;box-shadow:0 2px 8px rgba(26,107,60,.3)}
+.btn-run:hover{box-shadow:0 4px 12px rgba(26,107,60,.4);transform:translateY(-1px)}
+.btn-run:disabled{background:#a0bfaa;box-shadow:none;transform:none;cursor:not-allowed}
+.btn-stop{background:#fef2f2;color:var(--danger);border:1.5px solid #fecaca;margin-top:4px}
+.btn-stop:hover{background:#fee2e2}
+.btn-key{background:var(--g1);color:#fff;border-radius:7px;padding:7px 12px;font-size:12px;font-weight:700;border:none;cursor:pointer;font-family:inherit;white-space:nowrap}
+.btn-key:hover{background:var(--g2)}
+
+/* STATUS */
+.status-bar{font-size:11px;text-align:center;color:var(--muted);padding:4px 0;font-weight:500}
+.progress-bar{height:4px;background:var(--border);border-radius:4px;overflow:hidden;margin:4px 0 8px}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--g1),var(--g2));transition:width .4s;width:0%}
+
+/* MAIN */
+.main{padding:20px;overflow-y:auto;display:flex;flex-direction:column;gap:0}
+
+/* LOG */
+.log-card{background:var(--white);border-radius:12px;padding:18px;flex:1;border:1.5px solid var(--border);box-shadow:var(--shadow)}
+.log-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.log-title{font-size:15px;font-weight:700;color:var(--text)}
+.log-meta{font-size:11px;color:var(--muted)}
+.log-actions{display:flex;gap:8px;align-items:center}
+.log-clear{font-size:11px;cursor:pointer;background:var(--grey);border:1px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:5px;font-family:inherit}
+.log-clear:hover{color:var(--text);background:var(--border)}
+.log-body{font-size:12px;font-family:'SF Mono',Monaco,monospace;line-height:1.9;height:calc(100vh - 200px);overflow-y:auto;padding-right:4px}
+.log-body::-webkit-scrollbar{width:4px}
+.log-body::-webkit-scrollbar-track{background:transparent}
+.log-body::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.log-line{display:flex;gap:10px;padding:1px 0;border-radius:3px}
+.log-line .ts{color:#aab8b0;flex-shrink:0;font-size:11px;padding-top:1px}
+.log-line .msg{flex:1;word-break:break-word;color:#3d5247}
+.log-line.ok .msg{color:#15803d}
+.log-line.err{background:#fff8f8;padding:1px 4px}
+.log-line.err .msg{color:#dc2626}
+.log-line.skip .msg{color:#94a3b8}
+.log-line.warn .msg{color:#d97706}
+.log-line.head .msg{color:var(--g1);font-weight:700}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- SIDEBAR -->
+<div class="side">
+  <div class="side-top">
+    <div class="logo-icon">⚡</div>
+    <h1>Content Dashboard</h1>
+    <div class="tagline">WordPress automation · Claude AI</div>
+  </div>
+
+  <!-- API KEY -->
+  <div class="key-section">
+    <div class="key-status"><span class="dot" id="keyDot"></span><span id="keyStatusText">Checking...</span></div>
+    <div class="key-row">
+      <input type="password" id="apiKeyInput" placeholder="sk-ant-..." />
+      <button class="btn-key" onclick="saveKey()">Save</button>
+    </div>
+  </div>
+
+  <!-- SAVED SITES -->
+  <div class="sites-section">
+    <div class="sec-label">Saved Sites</div>
+    <div id="sitesList"><div class="no-sites">No saved sites yet</div></div>
+  </div>
+
+  <!-- FORM -->
+  <div class="form-section">
+    <label>Site Type</label>
+    <select id="siteType">
+      <option value="social-en">Social Gaming (EN)</option>
+      <option value="casino-fr">Casino Review (FR)</option>
+      <option value="casino-dk">Casino Review (DK)</option>
+      <option value="casino-pt">Casino Review (PT)</option>
+      <option value="casino-de">Casino Review (DE)</option>
+    </select>
+
+    <label>WordPress URL</label>
+    <input id="wpUrl" type="url" placeholder="https://site.cloudwaysapps.com" />
+
+    <label>Site / Brand Name</label>
+    <input id="brandName" placeholder="Phoenix Reel Play" />
+
+    <label>WP Username</label>
+    <input id="wpUser" placeholder="admin" />
+
+    <label>WP App Password</label>
+    <input id="wpPass" type="password" />
+
+    <label>Run Scope</label>
+    <div class="scope-row">
+      <div class="scope-btn active" data-scope="all" onclick="setScope(this)">All</div>
+      <div class="scope-btn" data-scope="globals" onclick="setScope(this)">Globals</div>
+      <div class="scope-btn" data-scope="pages" onclick="setScope(this)">Pages</div>
+      <div class="scope-btn" data-scope="repeaters" onclick="setScope(this)">Repeaters</div>
+    </div>
+
+    <div class="toggles">
+      <div class="toggle-row">
+        <div><div class="tgl-label">Force Rewrite</div><div class="tgl-desc">Overwrite even clean fields</div></div>
+        <label class="switch"><input type="checkbox" id="forceRewrite"><span class="slider"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div><div class="tgl-label">Skip Repeaters</div><div class="tgl-desc">Don't touch FAQ / testimonials</div></div>
+        <label class="switch"><input type="checkbox" id="skipRepeaters"><span class="slider"></span></label>
+      </div>
+    </div>
+
+    <button class="btn btn-save" onclick="saveSite()">💾 Save Site</button>
+    <button class="btn btn-run" id="runBtn" onclick="run()">⚡ Run</button>
+    <button class="btn btn-stop" id="stopBtn" onclick="stopRun()" style="display:none">⏹ Stop</button>
+    <div class="status-bar" id="statusBar">Ready</div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+</div>
+
+<!-- MAIN / LOG -->
+<div class="main">
+  <div class="log-card">
+    <div class="log-header">
+      <div>
+        <div class="log-title">Progress Log</div>
+        <div class="log-meta" id="logMeta">Waiting for task...</div>
+      </div>
+      <div class="log-actions">
+        <button class="log-clear" onclick="clearLog()">Clear</button>
+      </div>
+    </div>
+    <div class="log-body" id="logBody">
+      <div class="log-line skip"><span class="ts">--:--:--</span><span class="msg">Select a site and hit Run.</span></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+let stopped = false;
+let currentScope = 'all';
+let sites = [];
+let activeSiteIdx = -1;
+let logCount = 0;
+
+// ---- Boot ----
+async function boot() {
+  try {
+    const r = await fetch('/api/config');
+    const d = await r.json();
+    setKeyStatus(d.hasSavedKey);
+    sites = d.sites || [];
+    renderSites();
+  } catch(e) { setKeyStatus(false); }
+}
+
+function setKeyStatus(ok) {
+  document.getElementById('keyDot').className = 'dot' + (ok ? ' ok' : '');
+  document.getElementById('keyStatusText').textContent = ok ? '✓ API Key saved' : 'No API key — enter below';
+}
+
+async function saveKey() {
+  const key = document.getElementById('apiKeyInput').value.trim();
+  if (!key) return;
+  await fetch('/api/config', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ apiKey: key }) });
+  document.getElementById('apiKeyInput').value = '';
+  setKeyStatus(true);
+  log('API key saved to server.', 'ok');
+}
+
+// ---- Sites ----
+function renderSites() {
+  const el = document.getElementById('sitesList');
+  if (!sites.length) { el.innerHTML = '<div class="no-sites">No saved sites yet</div>'; return; }
+  el.innerHTML = sites.map((s,i) => `
+    <div class="site-item ${i===activeSiteIdx?'active':''}" onclick="loadSite(${i})">
+      <div><div class="site-name">${s.brandName}</div><div class="site-badge">${typeLabel(s.siteType)}</div></div>
+      <button class="del-btn" onclick="deleteSite(event,${i})">✕</button>
+    </div>`).join('');
+}
+
+function typeLabel(t) {
+  return {'social-en':'Social EN','casino-fr':'Casino FR','casino-dk':'Casino DK','casino-pt':'Casino PT','casino-de':'Casino DE'}[t]||t;
+}
+
+function loadSite(i) {
+  activeSiteIdx = i; const s = sites[i];
+  document.getElementById('siteType').value = s.siteType;
+  document.getElementById('wpUrl').value = s.wpUrl;
+  document.getElementById('brandName').value = s.brandName;
+  document.getElementById('wpUser').value = s.wpUser;
+  document.getElementById('wpPass').value = s.wpPass;
+  renderSites();
+}
+
+async function saveSite() {
+  const s = getForm();
+  if (!s.wpUrl || !s.brandName) { alert('WP URL and Brand Name required.'); return; }
+  const idx = sites.findIndex(x => x.wpUrl === s.wpUrl);
+  if (idx >= 0) sites[idx] = s; else sites.push(s);
+  await fetch('/api/config', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ sites }) });
+  activeSiteIdx = idx >= 0 ? idx : sites.length - 1;
+  renderSites();
+  log(`Saved: ${s.brandName}`, 'ok');
+}
+
+async function deleteSite(e, i) {
+  e.stopPropagation();
+  sites.splice(i,1);
+  if (activeSiteIdx === i) activeSiteIdx = -1;
+  await fetch('/api/config', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ sites }) });
+  renderSites();
+}
+
+function getForm() {
+  return {
+    siteType: document.getElementById('siteType').value,
+    wpUrl: document.getElementById('wpUrl').value.trim().replace(/\/$/,''),
+    brandName: document.getElementById('brandName').value.trim(),
+    wpUser: document.getElementById('wpUser').value.trim(),
+    wpPass: document.getElementById('wpPass').value.trim()
+  };
+}
+
+function setScope(el) {
+  document.querySelectorAll('.scope-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  currentScope = el.dataset.scope;
+}
+
+// ---- Logging ----
+function log(msg, type='info') {
+  const lb = document.getElementById('logBody');
+  const ts = new Date().toTimeString().slice(0,8);
+  const d = document.createElement('div');
+  d.className = 'log-line ' + type;
+  d.innerHTML = `<span class="ts">${ts}</span><span class="msg">${msg}</span>`;
+  lb.appendChild(d);
+  lb.scrollTop = lb.scrollHeight;
+  logCount++;
+  document.getElementById('logMeta').textContent = `${logCount} entries`;
+}
+
+function clearLog() {
+  document.getElementById('logBody').innerHTML = '';
+  logCount = 0;
+  document.getElementById('logMeta').textContent = '';
+}
+
+function status(msg, pct) {
+  document.getElementById('statusBar').textContent = msg;
+  if (pct !== undefined) document.getElementById('progressFill').style.width = pct + '%';
+}
+
+// ---- MAIN RUN ----
+async function run() {
+  stopped = false;
+  document.getElementById('runBtn').disabled = true;
+  document.getElementById('stopBtn').style.display = 'block';
+  clearLog();
+  const s = getForm();
+  if (!s.wpUrl || !s.brandName) { log('Enter WP URL and Brand Name first.', 'err'); finish(); return; }
+
+  const force = document.getElementById('forceRewrite').checked;
+  const skipRep = document.getElementById('skipRepeaters').checked;
+  status('Running...', 5);
+
+  try {
+    const resp = await fetch('/api/run', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        wpUrl: s.wpUrl,
+        auth: `${s.wpUser}:${s.wpPass}`,
+        brandName: s.brandName,
+        siteType: s.siteType,
+        scope: currentScope,
+        force,
+        skipRepeaters: skipRep
+      })
+    });
+
+    if (!resp.ok) { log('Server error: ' + resp.status, 'err'); finish(); return; }
+
+    const reader = resp.body.getReader();
+    const decoder = new TextDecoder();
+    let buf = '';
+
+    while (true) {
+      if (stopped) { reader.cancel(); break; }
+      const { value, done } = await reader.read();
+      if (done) break;
+      buf += decoder.decode(value, { stream: true });
+      const lines = buf.split('\n');
+      buf = lines.pop();
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        try {
+          const { msg, type } = JSON.parse(line.slice(6));
+          if (type === 'done')  { log(msg, 'ok'); status('Done ✓', 100); finish(); return; }
+          if (type === 'error') { log(msg, 'err'); status('Error', 0); finish(); return; }
+          if (type === 'head')  { log(msg, 'head'); status(msg.slice(0, 50), 20); }
+          else if (type === 'warn') log(msg, 'warn');
+          else if (type === 'skip') log(msg, 'skip');
+          else if (type === 'ok')   { log(msg, 'ok'); status(msg.slice(0, 50), 70); }
+          else if (type === 'err')  log(msg, 'err');
+          else log(msg);
+        } catch {}
+      }
+    }
+  } catch(e) {
+    log('Fatal: ' + e.message, 'err');
+    status('Error', 0);
+  }
+  finish();
+}
+
+function stopRun() { stopped = true; log('Stopped by user.', 'warn'); finish(); }
+function finish() {
+  document.getElementById('runBtn').disabled = false;
+  document.getElementById('stopBtn').style.display = 'none';
+  stopped = false;
+}
+
+boot();
+</script>
+</body>
+</html>
