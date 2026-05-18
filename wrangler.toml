@@ -1,16 +1,15 @@
 # Cloudflare Pages config.
 #
 # The CONFIG_KV binding is what `functions/_lib/config.js` reads/writes.
-# Create a KV namespace in the Cloudflare dashboard (Workers & Pages -> KV),
-# then either:
-#   a) bind it through the Pages dashboard (Settings -> Functions -> KV namespace
-#      bindings), variable name CONFIG_KV, OR
-#   b) replace the id below with your namespace id and run `wrangler pages deploy`.
+#
+# Bind it through the Cloudflare Pages dashboard:
+#   Workers & Pages -> your Pages project -> Settings -> Functions
+#   -> KV namespace bindings -> Add binding
+#     Variable name: CONFIG_KV
+#     KV namespace:  (create one under Workers & Pages -> KV, then select it here)
+#
+# Doing it via the dashboard means you don't need to commit a KV namespace ID.
 
 name = "betzoo-dashboard"
 compatibility_date = "2024-09-01"
 pages_build_output_dir = "public"
-
-[[kv_namespaces]]
-binding = "CONFIG_KV"
-id = "REPLACE_WITH_KV_NAMESPACE_ID"

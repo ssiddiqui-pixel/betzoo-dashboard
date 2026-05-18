@@ -2,7 +2,6 @@
   "name": "content-dashboard",
   "version": "2.0.0",
   "scripts": {
-    "start": "node server.js",
     "dev": "wrangler pages dev public",
     "deploy": "wrangler pages deploy public"
   },
