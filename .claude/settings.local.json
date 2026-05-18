@@ -1,7 +1,13 @@
 {
   "permissions": {
     "allow": [
-      "Bash(pm2 restart:*)"
+      "Bash(pm2 restart:*)",
+      "Bash(git add *)",
+      "Bash(git rebase *)",
+      "Bash(GIT_EDITOR=true git rebase *)",
+      "Bash(git -c core.editor=true commit --no-edit)",
+      "Bash(git stash *)",
+      "Bash(git push *)"
     ]
   }
 }
